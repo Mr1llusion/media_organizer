@@ -17,17 +17,18 @@ except ModuleNotFoundError:
 
 def main():
     # The main program execution function.
-    photo_destination = ""
-    video_destination = ""
+    custom_photo_destination = ""
+    custom_video_destination = ""
     scanned_current_location = False
     check_lost = "concealed"
     scan_location = os.path.dirname(os.path.abspath(__file__))
     photos_exists = os.path.join(scan_location, "photos")
     videos_exists = os.path.join(scan_location, "videos")
+    skip_delete_folders = custom_video_destination + custom_photo_destination + photos_exists + videos_exists
     if os.path.exists(photos_exists) and os.path.exists(videos_exists):
         check_lost = "bold"
-        photo_destination = photos_exists
-        video_destination = videos_exists
+        custom_photo_destination = photos_exists
+        custom_video_destination = videos_exists
         scanned_current_location = True
 
     while True:
@@ -61,6 +62,7 @@ def main():
         print(colored(" -  1) Scan current location", "green", attrs=["bold"]))
         print(colored(" -  2) Check for duplicate in the Scan Location", "green", attrs=["bold"]))
         print(colored(" -  3) Check for lost media", "green", attrs=[check_lost]))
+        print(colored("\n[!] 4) Delete media in current location", "red", attrs=[check_lost]))
         print(colored("\n0) Exit", "red"))
 
         choice = input(colored("\n[~] Enter your choice: ", "yellow", attrs=["bold"]))
@@ -97,25 +99,25 @@ def main():
                 except KeyboardInterrupt:
                     break
                 if save_choice == "1":
-                    photo_destination = os.path.join(scan_location, "photos")
-                    video_destination = os.path.join(scan_location, "videos")
-                    scan_media_and_organize(scan_location, photo_extensions, photo_destination)
-                    scan_media_and_organize(scan_location, video_extensions, video_destination)
+                    custom_photo_destination = os.path.join(scan_location, "photos")
+                    custom_video_destination = os.path.join(scan_location, "videos")
+                    scan_media_and_organize(scan_location, photo_extensions, custom_photo_destination)
+                    scan_media_and_organize(scan_location, video_extensions, custom_video_destination)
                 elif save_choice == "2":
                     # Ask the user for the destination folders
                     try:
                         print(colored("[!] Go Back? -> [Ctrl + C] or [Enter (Empty input)]", "red", attrs=["bold"]))
-                        photo_destination = input(colored("[+] Enter a path to save the Photos: ", "green"))
-                        if photo_destination == "":
+                        custom_photo_destination = input(colored("[+] Enter a path to save the Photos: ", "green"))
+                        if custom_photo_destination == "":
                             continue
-                        video_destination = input(colored("[+] Enter a path to save the Video: ", "green"))
-                        if video_destination == "":
+                        custom_video_destination = input(colored("[+] Enter a path to save the Video: ", "green"))
+                        if custom_video_destination == "":
                             continue
                     except KeyboardInterrupt:
                         continue
                     # Scan for photos and videos and Organize
-                    scan_media_and_organize(scan_location, photo_extensions, photo_destination)
-                    scan_media_and_organize(scan_location, video_extensions, video_destination)
+                    scan_media_and_organize(scan_location, photo_extensions, custom_photo_destination)
+                    scan_media_and_organize(scan_location, video_extensions, custom_video_destination)
 
                 else:
                     print("[Invalid Input]")
@@ -136,7 +138,7 @@ def main():
             if scanned_current_location:
                 os.system("cls")
                 banner()
-                check_lost_media(photo_destination, video_destination, scan_location)
+                check_lost_media(custom_photo_destination, custom_video_destination, scan_location)
                 try:
                     input(colored("\n[*] Press Enter to continue", "cyan"))
                 except KeyboardInterrupt:
@@ -147,6 +149,20 @@ def main():
                 print(colored("[!] Scan current location first, then run the check", "red", attrs=["bold"]))
                 input(colored("\n[*] Press Enter to continue", "cyan"))
 
+        elif choice == "4":
+            if scanned_current_location:
+                os.system("cls")
+                banner()
+                delete_media(scan_location, skip_delete_folders)
+                try:
+                    input(colored("\n[*] Press Enter to continue", "cyan"))
+                except KeyboardInterrupt:
+                    continue
+            else:
+                os.system("cls")
+                banner()
+                print(colored("[!] Scan current location first, then run the check", "red", attrs=["bold"]))
+                input(colored("\n[*] Press Enter to continue", "cyan"))
         elif choice == "0":
             print("[$] Exiting the program.")
             sleep(2)
@@ -155,6 +171,43 @@ def main():
         else:
             print("\n[!] Invalid choice. Please select a valid option.")
             sleep(1)
+
+
+def delete_media(delete_path, skip_delete_folders):
+    all_extensions = photo_extensions + video_extensions
+    if not os.path.exists(delete_path):
+        print("\n[!] Current location not found.")
+        return
+
+    print(f"{BOLD}{RED}┌────────────([!] WARNING - YOU ARE ABOUT TO DELETE ALL MEDIA FROM CURRENT LOCATION [!])-[~]"
+          f"{RESET}")
+    print(f"{BOLD}{CYAN}│")
+    # Allow the user to input "Delete all" to confirm the action
+    print(f"{BOLD}{CYAN}├ ", end="")
+    print(f"{BOLD}{RED}Delete from location: {delete_path}{RESET}")
+    print(f"{BOLD}{CYAN}│")
+    print(f"{BOLD}{CYAN}├ Type \"Delete all\" to delete all media{RESET}")
+    print(f"{BOLD}{CYAN}├ Enter/Ctrl+C to go Back{RESET}")
+    try:
+        delete_media_input = input(f"{BOLD}{RED}└─# {RESET}")
+    except KeyboardInterrupt:
+        print(colored("\n[+] Operation Canceled", "green"))
+        return
+    if delete_media_input.lower() == "delete all":
+        for root, dirs, files in os.walk(delete_path):
+            dirs[:] = [d for d in dirs if d not in skip_delete_folders]
+
+            for file in files:
+                if any(file.lower().endswith(ext) for ext in all_extensions):
+                    current_file = os.path.join(root, file)
+                    try:
+                        os.remove(current_file)
+                        print(f"Deleted: {current_file}")
+                    except Exception as e:
+                        print(f"Error deleting {current_file}: {str(e)}")
+    else:
+        print(colored("[+] Operation Canceled", "green"))
+        return
 
 
 # Function to create a cool banner
@@ -353,6 +406,11 @@ def check_duplicate_media(scan_location):
 
 
 if __name__ == "__main__":
+    # ANSI escape codes for text formatting and colors
+    RESET = "\033[0m"
+    BOLD = "\033[1m"
+    RED = "\033[91m"
+    CYAN = "\033[96m"
     # Define photo and video extensions separately
     photo_extensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp"]
     video_extensions = [".mp4", ".avi", ".mov", ".mkv"]
