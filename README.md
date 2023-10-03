@@ -3,6 +3,8 @@
 
 This Python script helps you organize and find duplicate media files on your computer.
 
+**Please Note:** This project is currently a work in progress, and additional features and improvements are planned.
+
 ## Features
 
 - **Media Organization**: Organize your media files by copying them to specified folders.
