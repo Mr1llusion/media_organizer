@@ -1,5 +1,5 @@
 # Media Organizer and Duplicate Finder
-![Project Logo](https://github.com/Mr1llusion/media_organizer/assets/144902381/e6e8a2e8-9b2a-4c86-90f6-a0fff8d840bb)
+![Project Logo](https://github.com/Mr1llusion/media_organizer/assets/144902381/cbe502ec-a908-4465-9983-3f5670cfef75)
 
 This Python script helps you organize and find duplicate media files on your computer.
 
