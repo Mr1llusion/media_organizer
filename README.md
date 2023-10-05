@@ -1,17 +1,21 @@
-# Media Organizer and Duplicate Finder
-![Project Logo](https://github.com/Mr1llusion/media_organizer/assets/144902381/1a859d0a-8ca8-442b-8566-f58cefc9f062)
+# Media Organizer
+![Project Logo](https://github.com/Mr1llusion/media_organizer/assets/144902381/8a50eb55-df6e-4db2-b48c-6ae1402d2e51)
 
-This Python script helps you organize and find duplicate media files on your computer.
+Have you ever been asked by your family or friends to help organize their photos and videos? 
 
-**Please Note:** This project is currently a work in progress, and improvements are planned.
+Did you find yourself facing a complete mess, overwhelmed by the number of photos and videos, and frustrated by duplicates scattered all over the place?
+
+If so, this tool has got your back! this tool is designed to help you tidy up your media files effortlessly.
+
 
 ## Features
 
-- **Media Organization**: Organize your media files by copying them to specified folders.
-- **Duplicate Finder**: Identify and manage duplicate media files.
-- **User-Friendly**: Simple command-line interface for ease of use.
+- Scan and organize photos and videos in your chosen directory.
+- Customize the list of file extensions to include or exclude.
+- Easily delete unwanted media files.
+- Organize your media files into categories.
 
-## Usage
+## Getting Started
 
 - Quick install:
 
@@ -20,6 +24,14 @@ This Python script helps you organize and find duplicate media files on your com
    cd media_organizer
    pip install -r requirements.txt
    ```
+Follow the on-screen prompts to start scanning and organizing your media files.
+
+## Usage
+1. Start by choosing a location to scan.
+2. Decide whether you want to organize photos or videos.
+3. Specify the directory you want to save.
+4. Choose whether you want to delete files or not.
+- Customize the list of file extensions to include or exclude (directly within the code).
 
 ## Contributing
 
